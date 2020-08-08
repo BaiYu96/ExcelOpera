@@ -3,8 +3,9 @@
 # 另存xls为xlsx
 
 
-from win32com.client import Dispatch
+# from win32com.client import Dispatch, gencache
 import os
+import win32com.client
 
 
 class ExcelInsert(object):
@@ -17,7 +18,8 @@ class ExcelInsert(object):
         :returns: None
         """
         self.filename = excel_file_path
-        self.excel = Dispatch('Excel.Application')
+        # self.excel = win32com.client.Dispatch('Excel.Application')  # 这个得在gencache.EnsureDispatch('Excel.Application') 有生成对应的缓存文件temp/gen_py/文件夹之后才能使用
+        self.excel = win32com.client.gencache.EnsureDispatch('Excel.Application')  # 如果没有缓存文件，则生成缓存文件
         # self.excel.Visible = True  # 显式打开excel 调试设置True
         self.book = self.excel.Workbooks.Open(excel_file_path)
         self.sheet_name = self.book.Worksheets(sheet_name)
@@ -89,12 +91,10 @@ if __name__ == '__main__':
     path = os.getcwd()
     filename = "../temp/test.xlsx"
     filename = os.path.join(path, filename)
-    # img_name = os.path.join(path, "../temp/A.1.1.1.1.png")
-    img_name = os.path.join(path, "../temp/Aword.docx")
+    img_name = os.path.join(path, "../temp/baiyu_logo.jpg")
+    # img_name = os.path.join(path, "../temp/Aword.docx")
 
-    excel = ExcelInsert(filename, "Sheet2")
+    excel = ExcelInsert(filename, "Sheet1")
     for col in a:
         excel.insert_obj(img_name, col, 20)
-    excel.save()
-    # input()
-    # excel.close()
+    excel.save()  # 调用保存方法
